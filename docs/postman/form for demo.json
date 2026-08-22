@@ -1,0 +1,127 @@
+{
+  "name": "Doctor Appointment Booking Demo",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Doctor Appointment Request",
+        "formDescription": "Select an available time slot to request a doctor appointment.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Patient Name",
+              "fieldName": "patientName",
+              "placeholder": "Amal Perera",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Patient Email",
+              "fieldType": "email",
+              "fieldName": "patientEmail",
+              "placeholder": "name@example.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Appointment Date",
+              "fieldType": "date",
+              "fieldName": "appointmentDate",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Time Slot",
+              "fieldType": "dropdown",
+              "fieldName": "timeSlot",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "09:00-09:30"
+                  },
+                  {
+                    "option": "09:30-10:00"
+                  },
+                  {
+                    "option": "10:00-10:30"
+                  },
+                  {
+                    "option": "10:30-11:00"
+                  },
+                  {
+                    "option": "14:00-14:30"
+                  },
+                  {
+                    "option": "14:30-15:00"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Appointment Type",
+              "fieldType": "dropdown",
+              "fieldName": "appointmentType",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "General Consultation"
+                  },
+                  {
+                    "option": "Follow-up Appointment"
+                  },
+                  {
+                    "option": "Prescription Discussion"
+                  },
+                  {
+                    "option": "Routine Check-up"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Short Note",
+              "fieldType": "textarea",
+              "fieldName": "shortNote",
+              "placeholder": "General appointment demonstration.",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "buttonLabel": "Submit Appointment Request",
+          "path": "doctor-appointment-demo"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        32,
+        32
+      ],
+      "id": "3312a757-b776-471f-b41a-7ba3467a6961",
+      "name": "On form submission",
+      "webhookId": "cc406204-3092-48cb-997a-7323ab589d25"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d7b3bd9b-d9d8-46ed-8098-11d2525477f3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "51b4e952219a74a099060715f33a1e604fdab0fec72998896431fd65ceda8f9b"
+  },
+  "nodeGroups": [],
+  "id": "br1mhjvFezVxAXuG",
+  "tags": []
+}
