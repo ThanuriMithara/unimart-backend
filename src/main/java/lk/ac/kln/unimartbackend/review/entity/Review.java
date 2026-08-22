@@ -38,7 +38,7 @@ public class Review {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    protected Review() {
+    public Review() {
         // required by JPA
     }
 
@@ -102,4 +102,10 @@ public class Review {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public void setOrder(Order order) { this.order = order; }
+    public void setReviewer(User reviewer) { this.reviewer = reviewer; }
+    public void setReviewee(User reviewee) { this.reviewee = reviewee; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

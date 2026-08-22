@@ -1,7 +1,5 @@
 package lk.ac.kln.unimartbackend.listing.service;
 
-import lk.ac.kln.unimartbackend.auth.entity.User;
-import lk.ac.kln.unimartbackend.auth.repository.UserRepository;
 import lk.ac.kln.unimartbackend.category.entity.Category;
 import lk.ac.kln.unimartbackend.category.repository.CategoryRepository;
 import lk.ac.kln.unimartbackend.common.exception.ConflictException;
@@ -13,19 +11,21 @@ import lk.ac.kln.unimartbackend.listing.entity.Listing;
 import lk.ac.kln.unimartbackend.listing.entity.ListingStatus;
 import lk.ac.kln.unimartbackend.listing.mapper.ListingMapper;
 import lk.ac.kln.unimartbackend.listing.repository.ListingRepository;
+import lk.ac.kln.unimartbackend.auth.entity.User;
+import lk.ac.kln.unimartbackend.auth.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
 public class ListingService {
-
     private final ListingRepository listings;
     private final CategoryRepository categories;
     private final UserRepository users;
     private final ListingMapper mapper;
 
-    public ListingService(ListingRepository listings, CategoryRepository categories,
-                          UserRepository users, ListingMapper mapper) {
+    public ListingService(ListingRepository listings, CategoryRepository categories, UserRepository users, ListingMapper mapper) {
         this.listings = listings;
         this.categories = categories;
         this.users = users;
@@ -38,15 +38,15 @@ public class ListingService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Category category = categories.findByIdAndActiveTrue(request.categoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-
-        Listing listing = new Listing(
-                seller,
-                category,
-                request.title().trim(),
-                request.description().trim(),
-                request.price()
-        );
-
+        Listing listing = new Listing();
+        listing.setSeller(seller);
+        listing.setCategory(category);
+        listing.setTitle(request.title().trim());
+        listing.setDescription(request.description().trim());
+        listing.setPrice(request.price());
+        listing.setStatus(ListingStatus.AVAILABLE);
+        listing.setCreatedAt(Instant.now());
+        listing.setUpdatedAt(Instant.now());
         return mapper.toResponse(listings.save(listing));
     }
 
@@ -62,12 +62,11 @@ public class ListingService {
         Listing listing = requireOwnedListing(id, email);
         Category category = categories.findByIdAndActiveTrue(request.categoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-
         listing.setTitle(request.title().trim());
         listing.setDescription(request.description().trim());
         listing.setPrice(request.price());
         listing.setCategory(category);
-
+        listing.setUpdatedAt(Instant.now());
         return mapper.toResponse(listing);
     }
 

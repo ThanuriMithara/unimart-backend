@@ -45,7 +45,7 @@ public class Listing {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    protected Listing() {
+    public Listing() {
         // required by JPA
     }
 
@@ -126,4 +126,8 @@ public class Listing {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public void setSeller(User seller) { this.seller = seller; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }
