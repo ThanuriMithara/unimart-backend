@@ -12,6 +12,8 @@ import lk.ac.kln.unimartbackend.review.dto.ReviewUpdateRequest;
 import lk.ac.kln.unimartbackend.review.entity.Review;
 import lk.ac.kln.unimartbackend.review.mapper.ReviewMapper;
 import lk.ac.kln.unimartbackend.review.repository.ReviewRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,11 @@ public class ReviewService {
         this.reviews = reviews;
         this.orders = orders;
         this.mapper = mapper;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReviewResponse> getReviewsForListing(Long listingId, Pageable pageable) {
+        return reviews.findByOrderListingId(listingId, pageable).map(mapper::toResponse);
     }
 
     @Transactional

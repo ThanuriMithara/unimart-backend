@@ -11,8 +11,12 @@ import lk.ac.kln.unimartbackend.listing.entity.Listing;
 import lk.ac.kln.unimartbackend.listing.entity.ListingStatus;
 import lk.ac.kln.unimartbackend.listing.mapper.ListingMapper;
 import lk.ac.kln.unimartbackend.listing.repository.ListingRepository;
+import lk.ac.kln.unimartbackend.listing.repository.ListingSpecifications;
 import lk.ac.kln.unimartbackend.auth.entity.User;
 import lk.ac.kln.unimartbackend.auth.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,14 @@ public class ListingService {
         this.categories = categories;
         this.users = users;
         this.mapper = mapper;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ListingResponse> getAll(String q, Long categoryId, ListingStatus status, Pageable pageable) {
+        Specification<Listing> spec = Specification.where(ListingSpecifications.hasQuery(q))
+                .and(ListingSpecifications.hasCategoryId(categoryId))
+                .and(ListingSpecifications.hasStatus(status));
+        return listings.findAll(spec, pageable).map(mapper::toResponse);
     }
 
     @Transactional
