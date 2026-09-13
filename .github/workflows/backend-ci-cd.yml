@@ -29,6 +29,10 @@ jobs:
           JWT_SECRET: dGhpcyBpcyBhIHZlcnkgbG9uZyBhbmQgc2VjdXJlIHNlY3JldCBrZXkgZm9yIHVuaW1hcnQ=
           APP_ALLOWED_ORIGINS: http://localhost:5173
         run: ./mvnw -B clean package -DskipTests
+      - name: Set lower case repository owner
+        id: repo_owner
+        run: |
+          echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
       - if: github.event_name == 'push'
         uses: docker/login-action@v3
         with:
@@ -41,8 +45,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/unimart-backend:latest
-            ghcr.io/${{ github.repository_owner }}/unimart-backend:${{ github.sha }}
+            ghcr.io/${{ steps.repo_owner.outputs.owner }}/unimart-backend:latest
+            ghcr.io/${{ steps.repo_owner.outputs.owner }}/unimart-backend:${{ github.sha }}
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.DO_HOST != ''
