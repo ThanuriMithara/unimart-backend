@@ -49,19 +49,22 @@ jobs:
             ghcr.io/${{ steps.repo_owner.outputs.owner }}/unimart-backend:${{ github.sha }}
 
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.DO_HOST != ''
+    if: github.event_name == 'push'
     needs: test-build-publish
     runs-on: ubuntu-latest
-    environment: production
     steps:
-      - name: Configure SSH
+      - name: Deploy backend via SSH
+        env:
+          DO_HOST: ${{ secrets.DO_HOST }}
+          DO_USER: ${{ secrets.DO_USER }}
+          DO_SSH_PRIVATE_KEY: ${{ secrets.DO_SSH_PRIVATE_KEY }}
         run: |
+          if [ -z "$DO_HOST" ] || [ -z "$DO_SSH_PRIVATE_KEY" ]; then
+            echo "Skipping deploy step: DO_HOST or DO_SSH_PRIVATE_KEY secrets are not configured yet."
+            exit 0
+          fi
           mkdir -p ~/.ssh
-          echo "${{ secrets.DO_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          echo "$DO_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H "${{ secrets.DO_HOST }}" >> ~/.ssh/known_hosts
-      - name: Deploy backend
-        run: |
-          ssh "${{ secrets.DO_USER }}@${{ secrets.DO_HOST }}" \
-            'cd /opt/unimart && docker compose pull backend && \
-             docker compose up -d backend && docker image prune -f'
+          ssh-keyscan -H "$DO_HOST" >> ~/.ssh/known_hosts
+          ssh "$DO_USER@$DO_HOST" 'cd /opt/unimart && docker compose pull backend && docker compose up -d backend && docker image prune -f'
