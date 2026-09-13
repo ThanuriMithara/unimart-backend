@@ -1,0 +1,48 @@
+# /opt/unimart/docker-compose.yml
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: unimart
+      MYSQL_USER: unimart_app
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks: [unimart]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    image: ghcr.io/CHANGE_TO_YOUR_GITHUB_USERNAME/unimart-backend:latest
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:mysql://db:3306/unimart
+      DB_USERNAME: unimart_app
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      APP_ALLOWED_ORIGINS: ${APP_ALLOWED_ORIGINS}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks: [unimart]
+
+  frontend:
+    image: ghcr.io/CHANGE_TO_YOUR_GITHUB_USERNAME/unimart-frontend:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:80"
+    networks: [unimart]
+
+networks:
+  unimart:
+
+volumes:
+  mysql_data:
